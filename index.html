@@ -1,0 +1,607 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>nabilacl</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            min-height: 100vh;
+            color: white;
+            overflow-x: hidden;
+            position: relative;
+        }
+        
+        /* Video Background */
+        #video-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            min-width: 100%;
+            min-height: 100%;
+            z-index: -1;
+            object-fit: cover;
+        }
+        
+        /* Overlay Gradient */
+        .overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, rgba(0, 26, 51, 0.9) 0%, rgba(0, 53, 102, 0.85) 50%, rgba(0, 89, 179, 0.8) 100%);
+            z-index: -1;
+        }
+        
+        /* Efek Liquid Glass */
+        .liquid-glass-effect {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+            pointer-events: none;
+        }
+        
+        .liquid-bubble {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(50px);
+            opacity: 0.4;
+            animation: float 15s infinite linear;
+        }
+        
+        .bubble-1 {
+            width: 300px;
+            height: 300px;
+            background: linear-gradient(135deg, #0088ff, #00bfff);
+            top: 10%;
+            left: 5%;
+            animation-duration: 20s;
+        }
+        
+        .bubble-2 {
+            width: 400px;
+            height: 400px;
+            background: linear-gradient(135deg, #0066cc, #0099ff);
+            bottom: 10%;
+            right: 5%;
+            animation-duration: 25s;
+            animation-delay: -5s;
+        }
+        
+        .bubble-3 {
+            width: 250px;
+            height: 250px;
+            background: linear-gradient(135deg, #004d99, #0077cc);
+            top: 40%;
+            right: 15%;
+            animation-duration: 18s;
+            animation-delay: -8s;
+        }
+        
+        @keyframes float {
+            0% {
+                transform: translate(0, 0) rotate(0deg);
+            }
+            25% {
+                transform: translate(50px, 80px) rotate(90deg);
+            }
+            50% {
+                transform: translate(100px, 0) rotate(180deg);
+            }
+            75% {
+                transform: translate(50px, -80px) rotate(270deg);
+            }
+            100% {
+                transform: translate(0, 0) rotate(360deg);
+            }
+        }
+        
+        .container {
+            max-width: 1200px;
+            width: 100%;
+            margin: 0 auto;
+            padding: 20px;
+            z-index: 10;
+            position: relative;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+        
+        /* Jam Liquid Glass */
+        #liquid-clock {
+            width: 350px;
+            height: 350px;
+            margin: 0 auto 40px;
+            border-radius: 50%;
+            background: rgba(0, 40, 85, 0.15);
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
+            border: 2px solid rgba(0, 180, 216, 0.4);
+            box-shadow: 
+                0 0 30px rgba(0, 100, 255, 0.3),
+                inset 0 0 30px rgba(0, 100, 255, 0.2);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+            overflow: hidden;
+            animation: glow-clock 3s infinite alternate;
+        }
+        
+        @keyframes glow-clock {
+            0% {
+                box-shadow: 
+                    0 0 20px rgba(0, 150, 255, 0.3),
+                    inset 0 0 20px rgba(0, 150, 255, 0.2);
+            }
+            100% {
+                box-shadow: 
+                    0 0 40px rgba(0, 200, 255, 0.6),
+                    inset 0 0 30px rgba(0, 200, 255, 0.4);
+            }
+        }
+        
+        .clock-inner {
+            width: 90%;
+            height: 90%;
+            border-radius: 50%;
+            background: rgba(0, 30, 60, 0.25);
+            backdrop-filter: blur(5px);
+            -webkit-backdrop-filter: blur(5px);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            color: #e6f7ff;
+            text-shadow: 0 0 10px rgba(0, 180, 216, 0.7);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .time {
+            font-size: 3.5rem;
+            font-weight: 300;
+            letter-spacing: 3px;
+            margin-bottom: 10px;
+        }
+        
+        .date {
+            font-size: 1.2rem;
+            font-weight: 300;
+            opacity: 0.8;
+        }
+        
+        /* Tombol Liquid Glass dengan efek mengkilap */
+        .glass-button {
+            display: block;
+            margin: 40px auto;
+            padding: 20px 60px;
+            font-size: 1.8rem;
+            font-weight: 600;
+            background: rgba(0, 53, 102, 0.3);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 2px solid rgba(0, 180, 216, 0.4);
+            border-radius: 50px;
+            color: #e6f7ff;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.4s ease;
+            box-shadow: 
+                0 0 20px rgba(0, 100, 255, 0.3),
+                inset 0 0 20px rgba(0, 100, 255, 0.2);
+            animation: glow-button 2s infinite alternate;
+        }
+        
+        .glass-button:hover {
+            transform: translateY(-5px) scale(1.05);
+            box-shadow: 
+                0 0 40px rgba(0, 180, 216, 0.6),
+                inset 0 0 30px rgba(0, 180, 216, 0.4);
+        }
+        
+        .glass-button:before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -60%;
+            width: 50%;
+            height: 200%;
+            background: rgba(255, 255, 255, 0.2);
+            transform: rotate(25deg);
+            transition: all 0.6s ease;
+        }
+        
+        .glass-button:hover:before {
+            left: 120%;
+        }
+        
+        @keyframes glow-button {
+            0% {
+                box-shadow: 
+                    0 0 15px rgba(0, 150, 255, 0.3),
+                    inset 0 0 15px rgba(0, 150, 255, 0.2);
+            }
+            100% {
+                box-shadow: 
+                    0 0 30px rgba(0, 200, 255, 0.7),
+                    inset 0 0 25px rgba(0, 200, 255, 0.5);
+            }
+        }
+        
+        /* Halaman Tentang Saya */
+        #about {
+            min-height: 100vh;
+            display: none;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 50px 20px;
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            z-index: 20;
+        }
+        
+        .glass-card {
+            background: rgba(0, 40, 85, 0.2);
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
+            border-radius: 25px;
+            padding: 50px;
+            max-width: 800px;
+            width: 90%;
+            border: 2px solid rgba(0, 180, 216, 0.4);
+            box-shadow: 
+                0 0 40px rgba(0, 100, 255, 0.3),
+                inset 0 0 30px rgba(0, 100, 255, 0.2);
+            text-align: center;
+            animation: glow-card 3s infinite alternate;
+        }
+        
+        @keyframes glow-card {
+            0% {
+                box-shadow: 
+                    0 0 30px rgba(0, 150, 255, 0.3),
+                    inset 0 0 20px rgba(0, 150, 255, 0.2);
+            }
+            100% {
+                box-shadow: 
+                    0 0 50px rgba(0, 200, 255, 0.6),
+                    inset 0 0 40px rgba(0, 200, 255, 0.4);
+            }
+        }
+        
+        .profile-img {
+            width: 200px;
+            height: 200px;
+            border-radius: 50%;
+            border: 3px solid rgba(0, 180, 216, 0.6);
+            object-fit: cover;
+            margin-bottom: 30px;
+            box-shadow: 0 0 30px rgba(0, 180, 216, 0.5);
+        }
+        
+        .profile-content h1 {
+            font-size: 2.8rem;
+            margin-bottom: 20px;
+            color: #00b4d8;
+            text-shadow: 0 0 15px rgba(0, 180, 216, 0.7);
+        }
+        
+        .profile-content p {
+            font-size: 1.3rem;
+            line-height: 1.8;
+            margin-bottom: 25px;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+            text-shadow: 0 0 5px rgba(0, 100, 255, 0.5);
+        }
+        
+        .info-box {
+            background: rgba(0, 53, 102, 0.3);
+            backdrop-filter: blur(5px);
+            border-radius: 20px;
+            padding: 25px;
+            margin-top: 30px;
+            border: 1px solid rgba(0, 180, 216, 0.4);
+        }
+        
+        /* Footer */
+        footer {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            background: rgba(0, 30, 60, 0.4);
+            backdrop-filter: blur(10px);
+            text-align: center;
+            padding: 20px;
+            font-size: 1.1rem;
+            border-top: 1px solid rgba(0, 180, 216, 0.3);
+            z-index: 15;
+            text-shadow: 0 0 5px rgba(0, 100, 255, 0.5);
+        }
+        
+        /* Kontrol Audio */
+        .audio-control {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            background: rgba(0, 53, 102, 0.3);
+            backdrop-filter: blur(5px);
+            padding: 12px 20px;
+            border-radius: 30px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            z-index: 20;
+            border: 1px solid rgba(0, 180, 216, 0.4);
+            box-shadow: 0 0 15px rgba(0, 100, 255, 0.3);
+            transition: all 0.3s ease;
+        }
+        
+        .audio-control:hover {
+            background: rgba(0, 73, 132, 0.4);
+            transform: scale(1.05);
+        }
+        
+        /* Animasi teks */
+        .home-content {
+            text-align: center;
+            padding: 20px;
+            max-width: 800px;
+            margin: 0 auto;
+            animation: fadeIn 1.5s ease-out;
+        }
+        
+        .home-content h1 {
+            font-size: 3.5rem;
+            margin-bottom: 20px;
+            text-shadow: 0 0 20px rgba(0, 180, 216, 0.8);
+            background: linear-gradient(to right, #8ae6ff, #00aaff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: gradientShift 5s infinite alternate;
+        }
+        
+        .home-content p {
+            font-size: 1.8rem;
+            margin-bottom: 40px;
+            text-shadow: 0 0 10px rgba(0, 150, 255, 0.7);
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        @keyframes gradientShift {
+            0% { background-position: 0% 50%; }
+            100% { background-position: 100% 50%; }
+        }
+        
+        /* Responsif */
+        @media (max-width: 768px) {
+            #liquid-clock {
+                width: 280px;
+                height: 280px;
+            }
+            
+            .time {
+                font-size: 2.8rem;
+            }
+            
+            .home-content h1 {
+                font-size: 2.5rem;
+            }
+            
+            .home-content p {
+                font-size: 1.4rem;
+            }
+            
+            .glass-button {
+                font-size: 1.5rem;
+                padding: 18px 50px;
+            }
+            
+            .glass-card {
+                padding: 30px;
+            }
+            
+            .profile-content h1 {
+                font-size: 2.2rem;
+            }
+            
+            .profile-content p {
+                font-size: 1.1rem;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            #liquid-clock {
+                width: 230px;
+                height: 230px;
+            }
+            
+            .time {
+                font-size: 2.2rem;
+            }
+            
+            .date {
+                font-size: 1rem;
+            }
+            
+            .home-content h1 {
+                font-size: 2rem;
+            }
+            
+            .home-content p {
+                font-size: 1.2rem;
+            }
+            
+            .glass-button {
+                font-size: 1.3rem;
+                padding: 15px 40px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Video Background -->
+    <video autoplay muted loop id="video-bg">
+        <!-- Ganti dengan path video lokal Anda -->
+        <source src="background-biru.mp4" type="video/mp4">
+        Browser Anda tidak mendukung video HTML5.
+    </video>
+    
+    <!-- Overlay Gradient -->
+    <div class="overlay"></div>
+    
+    <!-- Efek Liquid Glass -->
+    <div class="liquid-glass-effect">
+        <div class="liquid-bubble bubble-1"></div>
+        <div class="liquid-bubble bubble-2"></div>
+        <div class="liquid-bubble bubble-3"></div>
+    </div>
+    
+    <!-- Audio Backsound -->
+    <audio loop id="background-audio">
+        <!-- Ganti dengan path audio lokal Anda -->
+        <source src="nabila-blue.mp3" type="audio/mpeg">
+        Browser Anda tidak mendukung elemen audio.
+    </audio>
+    
+    <!-- Kontrol Audio -->
+    <div class="audio-control" id="audio-control">
+        <span id="audio-icon">🔊</span>
+        <span>Musik</span>
+    </div>
+    
+    <div class="container">
+        <!-- Halaman Utama -->
+        <div id="home">
+            <div class="home-content">
+                <h1>NABILACL</h1>
+                <p>Mahasiswa Teknik Informatika</p>
+                
+                <!-- Jam Liquid Glass di Tengah -->
+                <div id="liquid-clock">
+                    <div class="clock-inner">
+                        <div class="time" id="time">00:00:00</div>
+                        <div class="date" id="date">Senin, 1 Januari 2024</div>
+                    </div>
+                </div>
+                
+                <!-- Tombol Liquid Glass -->
+                <button class="glass-button" id="btn-more">
+                    <i class="fas fa-arrow-right"></i> Lihat Selengkapnya!
+                </button>
+            </div>
+        </div>
+        
+        <!-- Halaman Tentang Saya -->
+        <section id="about">
+            <div class="glass-card">
+                <img src="blue.jpg" alt="Foto Profil" class="profile-img">
+                <div class="profile-content">
+                    <h1>Tentang Saya</h1>
+                    <p>Halo! Saya Nabila, seorang mahasiswi Teknik Informatika. Saya memiliki minat besar dalam pengembangan web dan desain antarmuka pengguna.</p>
+                    <p>Saat ini, saya sedang mempelajari berbagai teknologi web modern.</p>
+                    <div class="info-box">
+                        <p><i class="fas fa-quote-left"></i> Saya percaya bahwa teknologi dapat menjadi alat untuk menciptakan solusi inovatif yang bermanfaat bagi masyarakat. <i class="fas fa-quote-right"></i></p>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+    
+    <!-- Footer -->
+    <footer>
+        <p>© 2025 Nabila. All Rights Reserved</p>
+    </footer>
+    
+    <script>
+        // Fungsi untuk jam realtime
+        function updateClock() {
+            const now = new Date();
+            const hours = now.getHours().toString().padStart(2, '0');
+            const minutes = now.getMinutes().toString().padStart(2, '0');
+            const seconds = now.getSeconds().toString().padStart(2, '0');
+            
+            const days = ['Minggu', 'Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu'];
+            const months = ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'];
+            
+            const dayName = days[now.getDay()];
+            const date = now.getDate();
+            const monthName = months[now.getMonth()];
+            const year = now.getFullYear();
+            
+            document.getElementById('time').textContent = `${hours}:${minutes}:${seconds}`;
+            document.getElementById('date').textContent = `${dayName}, ${date} ${monthName} ${year}`;
+        }
+        
+        // Update jam setiap detik
+        setInterval(updateClock, 1000);
+        updateClock(); // Panggil sekali untuk inisialisasi
+        
+        // Tombol Lihat Selengkapnya
+        document.getElementById('btn-more').addEventListener('click', function() {
+            document.getElementById('home').style.display = 'none';
+            document.getElementById('about').style.display = 'flex';
+            document.querySelector('footer').style.zIndex = '25';
+        });
+        
+        // Kontrol audio
+        const audio = document.getElementById('background-audio');
+        const audioControl = document.getElementById('audio-control');
+        const audioIcon = document.getElementById('audio-icon');
+        
+        // Mulai audio setelah interaksi pengguna
+        audioControl.addEventListener('click', function() {
+            if (audio.paused) {
+                audio.play();
+                audioIcon.textContent = '🔊';
+            } else {
+                audio.pause();
+                audioIcon.textContent = '🔇';
+            }
+        });
+        
+        // Coba putar audio otomatis
+        window.addEventListener('click', function initAudio() {
+            if (audio.paused) {
+                audio.play().catch(e => console.log('Autoplay prevented:', e));
+            }
+            window.removeEventListener('click', initAudio);
+        });
+        
+        // Inisialisasi audio
+        audio.volume = 0.3;
+        
+        // Mengganti sumber video dengan yang lokal
+        // Untuk penggunaan lokal, ganti URL berikut dengan path video Anda
+        // Contoh: videoElement.src = "local-video.mp4";
+        const videoElement = document.getElementById('video-bg');
+        // videoElement.src = "video-lokal-anda.mp4";
+    </script>
+</body>
+</html>
